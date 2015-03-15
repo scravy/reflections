@@ -63,7 +63,7 @@ Set<String> properties =
 ```
 ```java
 //MethodAnnotationsScanner
-Set<Method> resources =
+Set<Method> methods =
     reflections.getMethodsAnnotatedWith(javax.ws.rs.Path.class);
 Set<Constructor> injectables = 
     reflections.getConstructorsAnnotatedWith(javax.inject.Inject.class);
