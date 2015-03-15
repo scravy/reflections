@@ -8,8 +8,6 @@ import org.reflections.ReflectionsException;
 import org.reflections.adapters.MetadataAdapter;
 import org.reflections.vfs.Vfs;
 
-import static org.reflections.Reflections.log;
-
 /**
  *
  */
