@@ -7,6 +7,8 @@ package org.reflections;
 
 public class ReflectionsException extends RuntimeException {
 
+	private static final long serialVersionUID = -9026251130714337186L;
+
 	public ReflectionsException(String message) {
 		super(message);
 	}
