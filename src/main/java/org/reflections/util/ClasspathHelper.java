@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
@@ -257,7 +256,7 @@ public abstract class ClasspathHelper {
             if (path != null) {
                 final File file = new File(path);
                 if (file.exists())
-                    return file.toURL();
+                    return file.toURI().toURL();
             } else {
                 return servletContext.getResource("/WEB-INF/classes");
             }
@@ -296,17 +295,21 @@ public abstract class ClasspathHelper {
             final String part = cleanPath(url);
             File jarFile = new File(part);
             JarFile myJar = new JarFile(part);
-            URL validUrl = tryToGetValidUrl(jarFile.getPath(), new File(part).getParent(), part);
-            if (validUrl != null) { result.add(validUrl); }
-            final Manifest manifest = myJar.getManifest();
-            if (manifest != null) {
-                final String classPath = manifest.getMainAttributes().getValue(new Attributes.Name("Class-Path"));
-                if (classPath != null) {
-                    for (String jar : classPath.split(" ")) {
-                        validUrl = tryToGetValidUrl(jarFile.getPath(), new File(part).getParent(), jar);
-                        if (validUrl != null) { result.add(validUrl); }
-                    }
-                }
+            try {
+	            URL validUrl = tryToGetValidUrl(jarFile.getPath(), new File(part).getParent(), part);
+	            if (validUrl != null) { result.add(validUrl); }
+	            final Manifest manifest = myJar.getManifest();
+	            if (manifest != null) {
+	                final String classPath = manifest.getMainAttributes().getValue(new Attributes.Name("Class-Path"));
+	                if (classPath != null) {
+	                    for (String jar : classPath.split(" ")) {
+	                        validUrl = tryToGetValidUrl(jarFile.getPath(), new File(part).getParent(), jar);
+	                        if (validUrl != null) { result.add(validUrl); }
+	                    }
+	                }
+	            }
+            } finally {
+            	myJar.close();
             }
         } catch (IOException e) {
             // don't do anything, we're going on the assumption it is a jar, which could be wrong
